@@ -1,11 +1,15 @@
-const express=require('express');
+const express = require('express');
 const path = require('path');
+const cors = require('cors'); 
 
 const app = express();
-//Middlewares
-app.use(express.json()); //middleware
+
+// Middlewares
+app.use(cors()); 
+app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));
 app.use('/uploads',express.static(path.join(__dirname,'uploads')));
+
 //Routes
 const uploadRoutes = require('./routes/upload');
 app.use('/api',uploadRoutes);
@@ -19,6 +23,7 @@ app.use('/api/payslip', payslipRoutes);
 app.get('/health',(req,res)=>{
     res.send('Backend is running');
 });
+
 // Error Handler
 const errorHandler = require('./middlewares/errorHandler');
 app.use(errorHandler);
