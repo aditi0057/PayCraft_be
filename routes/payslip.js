@@ -5,7 +5,7 @@ const { getEmployees } = require("../storage/employeeStore");
 const path = require("path");
 const fs = require("fs");
 
-router.get("/:empNo", (req, res) => {
+router.get("/:empNo", async (req, res) => {
   const empNo = req.params.empNo;
   const employees = getEmployees();
   console.log("All employees:", employees);
@@ -40,7 +40,7 @@ router.get("/:empNo", (req, res) => {
 //   }
   try {
     const templatePath = path.join(uploadDir, docxFile[0].file);
-    const pdfPath = generatePayslip(employee, templatePath);
+    const pdfPath = await generatePayslip(employee, templatePath);
     res.download(pdfPath);
   } catch (error) {
     console.error(error);

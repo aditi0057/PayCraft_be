@@ -14,14 +14,17 @@
     "adm-zip": "^0.5.16",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
+    "docx-pdf": "^0.0.1",
     "docxtemplater": "^3.63.3",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "fs": "^0.0.1-security",
     "libreoffice-convert": "^1.6.1",
+    "mammoth": "^1.9.1",
     "multer": "^2.0.1",
     "nodemon": "^3.1.10",
     "path": "^0.12.7",
-    "pizzip": "^3.2.0"
+    "pizzip": "^3.2.0",
+    "puppeteer": "^24.15.0"
   }
 }
