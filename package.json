@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@pdftron/pdfnet-node": "^11.5.0",
+    "@sparticuz/chromium": "^138.0.2",
     "adm-zip": "^0.5.16",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
@@ -25,6 +26,6 @@
     "nodemon": "^3.1.10",
     "path": "^0.12.7",
     "pizzip": "^3.2.0",
-    "puppeteer": "^24.15.0"
+    "puppeteer-core": "^24.15.0"
   }
 }

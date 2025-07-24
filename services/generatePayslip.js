@@ -1,8 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const AdmZip = require("adm-zip");
-const mammoth = require("mammoth"); //  for DOCX to HTML
-const puppeteer = require("puppeteer"); //  for HTML to PDF
+const mammoth = require("mammoth");
+const chromium = require("@sparticuz/chromium"); 
+const puppeteer = require("puppeteer-core"); 
 
 const outputDir = path.join(__dirname, "..", "output");
 if (!fs.existsSync(outputDir)) {
@@ -10,6 +11,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 async function generatePayslip(employee, templatePath) {
+  let browser;
   try {
     
     const templateBuffer = fs.readFileSync(templatePath);
@@ -42,16 +44,19 @@ async function generatePayslip(employee, templatePath) {
     zip.updateFile("word/document.xml", Buffer.from(documentXml, "utf8"));
     const modifiedDocxBuffer = zip.toBuffer();
 
-    
+    //  DOCX buffer to HTML using Mammoth
     const { value: html } = await mammoth.convertToHtml({ buffer: modifiedDocxBuffer });
 
-    
-    const browser = await puppeteer.launch({
-      // Arguments required for running in a container environment like Render
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    //Puppeteer-Core with the lightweight Chromium to "print" the HTML to a PDF
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
+
     const page = await browser.newPage();
-    
     
     const styledHtml = `
       <html>
@@ -77,8 +82,6 @@ async function generatePayslip(employee, templatePath) {
       printBackground: true
     });
 
-    await browser.close();
-
     if (!fs.existsSync(pdfPath)) {
       throw new Error("PDF generation failed using Puppeteer");
     }
@@ -88,6 +91,11 @@ async function generatePayslip(employee, templatePath) {
   } catch (error) {
     console.error("Error generating payslip:", error);
     throw error;
+  } finally {
+    // Ensure the browser is closed even if an error occurs
+    if (browser) {
+      await browser.close();
+    }
   }
 }
 
